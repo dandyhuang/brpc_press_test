@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "butil/time.h"
-#include "proto/fs.pb.h"
+//#include "proto/fs.pb.h"
 DEFINE_bool(print_request, false, "");
 DEFINE_bool(print_response, false, "");
 DEFINE_bool(save_response, false, "");
@@ -50,7 +50,6 @@ static std::string message_to_json(const google::protobuf::Message& message) {
 }
 
 void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std::string& file) {
-  char buffer[256];
   std::ifstream in(file);
   if (!in.is_open()) {
     LOG(WARNING) << "Error opening file";
@@ -77,23 +76,23 @@ void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std
 }
 
 void fill_request(std::shared_ptr<google::protobuf::Message>& request) {
-  fs::interface::FsRequest req;
-  auto time_us = butil::gettimeofday_us();
-  auto imei_idx = time_us % imeis.size();
-  auto item_idx = time_us % items.size();
-  req.set_user_id(imeis[imei_idx]);
-  auto item_num = FLAGS_item_num > items.size() ? items.size() : FLAGS_item_num;
-  for (int i = 0; i < item_num; i++) {
-    auto idx = i + item_idx;
-    if (idx >= items.size()) {
-      idx %= items.size();
-    }
-    req.add_ad_id(items[idx]);
-  }
-  ((fs::interface::FsRequest*)(request.get()))->Swap(&req);
-  if (FLAGS_print_request) {
-    std::cout << "request:" << message_to_json(*request) << std::endl;
-  }
+//  fs::interface::FsRequest req;
+//  auto time_us = butil::gettimeofday_us();
+//  auto imei_idx = time_us % imeis.size();
+//  auto item_idx = time_us % items.size();
+//  req.set_user_id(imeis[imei_idx]);
+//  auto item_num = FLAGS_item_num > items.size() ? items.size() : FLAGS_item_num;
+//  for (int i = 0; i < item_num; i++) {
+//    auto idx = i + item_idx;
+//    if (idx >= items.size()) {
+//      idx %= items.size();
+//    }
+//    req.add_ad_id(items[idx]);
+//  }
+//  ((fs::interface::FsRequest*)(request.get()))->Swap(&req);
+//  if (FLAGS_print_request) {
+//    std::cout << "request:" << message_to_json(*request) << std::endl;
+//  }
 }
 void diff_process_response(std::shared_ptr<google::protobuf::Message> response) {
   if (FLAGS_print_response) {

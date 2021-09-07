@@ -68,12 +68,13 @@ cc_config(
     extra_incs=[
         # for all thirdparty packages
         # 'thirdparty/boost/include'
+         'thirdparty',
     ],
     linkflags = [
         #'-L./thirdparty/tair/lib64_release/',
-        '-L./thirdparty/tbsys/lib64_release/',
+       # '-L./thirdparty/tbsys/lib64_release/',
        # '-ltairclientapi',
-        '-ltbsys',
+        # '-ltbsys',
         #'-ltcmalloc_and_profiler',
         '-pthread',
         '-ldl',
