@@ -1,4 +1,4 @@
-#include "press_test/req_resp.h"
+#include "req_resp.h"
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>

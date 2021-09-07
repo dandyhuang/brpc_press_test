@@ -1,0 +1,5 @@
+build64_release
+.vscode
+.Building.lock
+blade-bin
+.blade.test.stamp

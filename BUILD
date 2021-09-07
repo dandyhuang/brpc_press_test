@@ -26,6 +26,5 @@ cc_binary(
         '//thirdparty/libshmcache:shmcache',
         '//thirdparty/libfastcommon:fastcommon',
     ],
-    link_all_symbols=True
 )
 

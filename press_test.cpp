@@ -10,7 +10,7 @@
 #include "brpc/callback.h"
 #include "butil/time.h"
 #include "google/protobuf/message.h"
-#include "press_test/req_resp.h"
+#include "req_resp.h"
 
 DEFINE_string(service_name, "", "");
 DEFINE_string(method_name, "", "");
