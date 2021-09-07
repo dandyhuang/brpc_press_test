@@ -1,3 +1,15 @@
+cc_binary (
+    name = 'brpc_press_test',
+    srcs = glob([
+        './press_test.cpp',
+    ]),
+    deps = [
+    ':press_test',
+    ],
+    warning = 'no'
+)
+
+
 cc_library(
     name = "press_test",
     srcs = glob([
@@ -26,16 +38,7 @@ cc_library(
         '//thirdparty/libshmcache:shmcache',
         '//thirdparty/libfastcommon:fastcommon',
     ],
-    link_all_symbols=True,
+    link_all_symbols=True
 )
 
-cc_binary (
-    name = 'brpc_press_test',
-    srcs = glob([
-        './press_test.cpp',
-    ]),
-    deps = [
-    ':press_test',
-    ],
-    warning = 'no'
-)
+
