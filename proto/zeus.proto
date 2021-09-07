@@ -1,0 +1,109 @@
+syntax="proto3";
+
+package zeus.proto;
+
+option cc_generic_services = true;
+
+//目的: 用于识别不同的场景
+enum SCENE_ID {
+    UNKNOWN = 0;
+    SCENE_ID_FEED = 1;      
+    SCENE_ID_ALLIANCE = 450;            
+    SCENE_ID_FEED_OTHER = 453;            
+}
+
+message UserInfo {
+     string query = 1;
+     string gender = 2;
+     string age = 3;
+     string dep_item_id = 4;
+     string scene = 5;
+    // xxxxx
+};
+
+message ItemInfo {
+    string title = 1;
+    int32 cost_type = 2; // 转化类型
+    int32 target = 3; // 走网络target
+    // xxxx
+};
+
+message User {
+     string user_id = 1;
+     UserInfo user_info = 2;
+};
+
+
+message Item {
+    string item_id = 1;
+    ItemInfo item_info = 2;
+    repeated float recall_score = 3;            
+    repeated float basic_rank_score = 4;        
+    repeated float predict_score = 5;           
+    string trace_id = 6;                        
+}
+
+//目的: 用于识别特征数据压缩方式
+enum COMPRESS_TYPE {
+    UNCOMPRESS      = 0;
+    SNAPPY          = 1;
+    GZIP            = 2;
+}
+
+message FeatureMetaInfo {
+    uint32 feature_id            = 1;       
+    string msg_path              = 2;     
+    string field_path            = 3;      
+    bytes data                   = 4;     
+    COMPRESS_TYPE compress       = 5;       
+}
+
+message ZeusRequest {
+  User user = 1;
+  repeated Item item = 2;
+  repeated int32 tag = 3; // for process tag negtive mean use default
+  SCENE_ID scene_id = 5; //场景定义
+  string scene_sub_alg = 6; // {version}_unionflag_ocpc
+  int64 position_id = 7;
+  string mobil_user_model = 8;                    // 端侧用户模型 (服务端透传) 已废弃
+  string req_id = 11;
+  string openid = 12;                           
+  int32 channel_id = 13;                           // 子频道id
+  int32 feed_scene_id = 14;                        // 推荐场景scene_id
+  repeated FeatureMetaInfo feature_meta_info = 15;
+  int32 totalResult = 16;                         //总条数，推荐侧返回的可展示的item总数
+  string predict_addr = 100; 
+  bool debug = 116;    
+};
+
+message TensorOutput{
+  // One dimension of the tensor.
+  message Dim {
+    // Size of the tensor in that dimension.
+    int64 size = 1;
+    // Optional name of the tensor dimension.
+    string name = 2;
+  };
+  repeated Dim dim = 2;
+  // DT_FLOAT.
+  repeated float float_val = 5 [packed = true];
+};
+
+message ModelResponse {
+  float q = 1;
+  bytes reserved = 2;
+  repeated float q_list = 3;
+  TensorOutput  output = 4;
+};
+
+
+message ZeusResponse {
+    User user = 1;
+    repeated Item item = 2;
+    repeated ModelResponse model_response = 3;
+    repeated string debug_info = 4;
+};
+
+service ZeusService {
+    rpc Predict(ZeusRequest) returns (ZeusResponse);
+};

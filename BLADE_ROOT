@@ -1,0 +1,109 @@
+def is_running_in_ci():
+    import os
+    return 'JENKINS_HOME' in os.environ
+
+def gcc_major():
+    # So that we do not have to call `gcc -dumpversion` each time we get called.
+    if not hasattr(gcc_major, "gcc_major"):
+        import subprocess
+        gcc_major.gcc_major = int(
+            subprocess.check_output(['gcc', '-dumpversion']).split('.')[0]
+        )
+
+    return gcc_major.gcc_major
+
+def first_if_gcc8(first, second):
+    return first if gcc_major() >= 8 else second
+
+global_config(
+    native_builder = 'ninja',
+    duplicated_source_action = 'error',
+    test_timeout = 600  # 600s
+)
+
+link_config(
+    link_on_tmp=False,
+)
+
+cc_config(
+    cppflags=[
+#'-DEIGEN_USE_MKL_ALL',
+        #'-DBRPC_ENABLE_CPU_PROFILER',
+        '-D_GNU_SOURCE',
+        '-D__STDC_LIMIT_MACROS',
+        '-DNDEBUG',
+        '-D_GLIBCXX_USE_CXX11_ABI=0',
+        # Not a cppflag, indeed. But this is the (seemingly?) only way to
+        # pass the flag to both C and CXX compiler.
+        '-fdiagnostics-color=always' if not is_running_in_ci() else ''
+    ],
+    warnings = [
+        '-Wall',
+        '-Wextra',
+        '-Wno-unused-parameter',
+        '-Wno-unused-local-typedefs',
+        '-Wno-missing-field-initializers',
+        '-Wno-parentheses',
+        '-Wenum-compare',
+        '-Wno-narrowing',
+        '-Wno-deprecated',
+    ],
+    cflags = [
+        '-g', 
+        '-pipe',
+        '-pthread'
+    ],
+    cxxflags = [
+        '-g',
+        '-pipe',
+        '-msse3',
+        '-pthread',
+        '-fpermissive',
+        '-std=c++11',
+        '-fno-omit-frame-pointer'
+    ],
+    cxx_warnings = [
+        '-Wno-deprecated-declarations'
+    ],
+    extra_incs=[
+        # for all thirdparty packages
+        # 'thirdparty/boost/include'
+    ],
+    linkflags = [
+        #'-L./thirdparty/tair/lib64_release/',
+        '-L./thirdparty/tbsys/lib64_release/',
+       # '-ltairclientapi',
+        '-ltbsys',
+        #'-ltcmalloc_and_profiler',
+        '-pthread',
+        '-ldl',
+        '-lssl',
+        '-lcrypto',
+        '-lz',
+    ],
+    optimize = '-O2',
+    cpplint = '',
+    header_inclusion_dependencies = True
+)
+
+cc_library_config(
+    #generate_dynamic=True
+)
+
+proto_library_config(
+    #protoc='thirdparty/protobuf-3.6.1/bin/protoc',
+    protoc='thirdparty/protobuf/bin/protoc',
+    protobuf_libs=[
+        '//thirdparty/protobuf:protobuf',
+        ],
+)
+
+cc_test_config(
+    dynamic_link=False,
+    heap_check='strict',
+    pprof_path='/usr/bin/pprof',
+    gperftools_libs=['#tcmalloc'],
+    gperftools_debug_libs=['#tcmalloc_debug'],
+    gtest_libs=['//thirdparty/gtest:gtest', '//thirdparty/gmock:gmock'],
+    gtest_main_libs=['//thirdparty/gtest:gtest_main']
+)
