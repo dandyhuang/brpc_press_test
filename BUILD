@@ -16,6 +16,7 @@ cc_library(
         './req_resp.cpp',
         './proto/*.cc',
     ]),
+    incs=['./'],
     deps = [
         '//thirdparty/leveldb-1.12.0:leveldb',
         '//thirdparty/brpc:brpc',
@@ -37,7 +38,7 @@ cc_library(
         #'//thirdparty/gperftools:tcmalloc_and_profiler', # for pprof
         '//thirdparty/libshmcache:shmcache',
         '//thirdparty/libfastcommon:fastcommon',
-        '//proto/protocol:protocol',
+        '//proto/protocol',
     ],
     link_all_symbols=True
 )
