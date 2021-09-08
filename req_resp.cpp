@@ -67,8 +67,9 @@ void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std
   // for (auto v : data) {
   //   json += v;
   // }
+  // 一次读取整个文件https://blog.csdn.net/tulip527/article/details/7976471
   std::string json((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-  LOG(INFO) << "data size:" << data.size() << " | json:" << json;
+  LOG(INFO) << "| json:" << json;
 
   google::protobuf::util::JsonParseOptions options;
   options.ignore_unknown_fields = true;
