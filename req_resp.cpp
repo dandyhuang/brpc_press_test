@@ -55,18 +55,19 @@ void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std
     LOG(WARNING) << "Error opening file";
     exit(1);
   }
-  std::vector<std::string> data;
-  while (!in.eof()) {
-    std::string s;
-    std::getline(in, s);
-    data.push_back(s);
-  }
-  in.close();
+  // std::vector<std::string> data;
+  // while (!in.eof()) {
+  //   std::string s;
+  //   std::getline(in, s);
+  //   data.push_back(s);
+  // }
+  // in.close();
 
-  std::string json;
-  for (auto v : data) {
-    json += v;
-  }
+  // std::string json;
+  // for (auto v : data) {
+  //   json += v;
+  // }
+  std::string json((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
   LOG(INFO) << "data size:" << data.size() << " | json:" << json;
 
   google::protobuf::util::JsonParseOptions options;
@@ -76,23 +77,23 @@ void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std
 }
 
 void fill_request(std::shared_ptr<google::protobuf::Message>& request) {
-//  fs::interface::FsRequest req;
-//  auto time_us = butil::gettimeofday_us();
-//  auto imei_idx = time_us % imeis.size();
-//  auto item_idx = time_us % items.size();
-//  req.set_user_id(imeis[imei_idx]);
-//  auto item_num = FLAGS_item_num > items.size() ? items.size() : FLAGS_item_num;
-//  for (int i = 0; i < item_num; i++) {
-//    auto idx = i + item_idx;
-//    if (idx >= items.size()) {
-//      idx %= items.size();
-//    }
-//    req.add_ad_id(items[idx]);
-//  }
-//  ((fs::interface::FsRequest*)(request.get()))->Swap(&req);
-//  if (FLAGS_print_request) {
-//    std::cout << "request:" << message_to_json(*request) << std::endl;
-//  }
+  //  fs::interface::FsRequest req;
+  //  auto time_us = butil::gettimeofday_us();
+  //  auto imei_idx = time_us % imeis.size();
+  //  auto item_idx = time_us % items.size();
+  //  req.set_user_id(imeis[imei_idx]);
+  //  auto item_num = FLAGS_item_num > items.size() ? items.size() : FLAGS_item_num;
+  //  for (int i = 0; i < item_num; i++) {
+  //    auto idx = i + item_idx;
+  //    if (idx >= items.size()) {
+  //      idx %= items.size();
+  //    }
+  //    req.add_ad_id(items[idx]);
+  //  }
+  //  ((fs::interface::FsRequest*)(request.get()))->Swap(&req);
+  //  if (FLAGS_print_request) {
+  //    std::cout << "request:" << message_to_json(*request) << std::endl;
+  //  }
 }
 void diff_process_response(std::shared_ptr<google::protobuf::Message> response) {
   if (FLAGS_print_response) {
