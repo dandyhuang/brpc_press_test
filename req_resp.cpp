@@ -58,7 +58,7 @@ void fill_request(std::shared_ptr<google::protobuf::Message>& request, const std
   std::vector<std::string> data;
   while (!in.eof()) {
     std::string s;
-    getline(in, s);
+    std::getline(in, s);
     data.push_back(s);
   }
   in.close();
